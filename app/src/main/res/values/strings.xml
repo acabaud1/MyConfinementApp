@@ -11,4 +11,11 @@
     <string name="menu_map">Carte</string>
     <string name="menu_compass">Boussole</string>
     <string name="menu_agenda">Agenda</string>
+
+    <string-array name="categories">
+        <item>Alimentation</item>
+        <item>Santé</item>
+        <item>Sport</item>
+        <item>Animaux</item>
+    </string-array>
 </resources>
