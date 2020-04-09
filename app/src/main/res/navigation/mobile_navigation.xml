@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_todo">
+
+    <fragment
+        android:id="@+id/nav_todo"
+        android:name="com.ynov.myconfinement.ui.todo.TodoFragment"
+        android:label="@string/menu_todo"
+        tools:layout="@layout/fragment_todo" />
+
+    <fragment
+        android:id="@+id/nav_map"
+        android:name="com.ynov.myconfinement.ui.map.MapFragment"
+        android:label="@string/menu_map"
+        tools:layout="@layout/fragment_map" />
+
+    <fragment
+        android:id="@+id/nav_compass"
+        android:name="com.ynov.myconfinement.ui.compass.CompassFragment"
+        android:label="@string/menu_compass"
+        tools:layout="@layout/fragment_compass" />
+
+    <fragment
+        android:id="@+id/nav_agenda"
+        android:name="com.ynov.myconfinement.ui.agenda.AgendaFragment"
+        android:label="@string/menu_agenda"
+        tools:layout="@layout/fragment_agenda" />
+
+</navigation>
