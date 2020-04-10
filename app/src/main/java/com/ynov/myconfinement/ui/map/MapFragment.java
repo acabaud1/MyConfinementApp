@@ -1,7 +1,11 @@
 package com.ynov.myconfinement.ui.map;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Debug;
@@ -10,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +27,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -102,12 +109,6 @@ public class MapFragment extends Fragment {
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     JSONObject item = jsonArray.getJSONObject(i);
                                     items.add(item);
-
-                                    //JSONObject fields = item.getJSONObject("fields");
-                                    //JSONArray coordinates = fields.getJSONArray("geo_point_2d");
-
-                                    //LatLng position = new LatLng(coordinates.getDouble(0), coordinates.getDouble(1));
-                                    //addMarker(fields, position);
                                 }
 
                                 addMarkers(items);
@@ -145,7 +146,8 @@ public class MapFragment extends Fragment {
                         googleMap.addMarker(new MarkerOptions()
                                 .position(position)
                                 .title(fields.getString("name"))
-                                .snippet(fields.getString("commune")));
+                                .snippet(fields.getString("available") + " / " + fields.getString("bike_stand"))
+                                .icon(generateBitmapDescriptorFromRes(getContext(), R.drawable.ic_directions_bike_black_24dp)));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -183,5 +185,14 @@ public class MapFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    public static BitmapDescriptor generateBitmapDescriptorFromRes(Context context, int resId) {
+        Drawable drawable = ContextCompat.getDrawable(context, resId);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
