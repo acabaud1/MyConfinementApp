@@ -146,7 +146,7 @@ public class MapFragment extends Fragment {
                         googleMap.addMarker(new MarkerOptions()
                                 .position(position)
                                 .title(fields.getString("name"))
-                                .snippet(fields.getString("available") + " / " + fields.getString("bike_stand"))
+                                .snippet("Disponibilité : " + fields.getString("available") + " / " + fields.getString("bike_stand"))
                                 .icon(generateBitmapDescriptorFromRes(getContext(), R.drawable.ic_directions_bike_black_24dp)));
                     }
                 } catch (JSONException e) {

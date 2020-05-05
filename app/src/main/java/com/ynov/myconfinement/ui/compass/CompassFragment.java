@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.ynov.myconfinement.R;
 
@@ -23,7 +22,7 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class CompassFragment extends Fragment implements SensorEventListener {
 
-    private CompassViewModel galleryViewModel;
+    //private CompassViewModel galleryViewModel;
 
     float[] mGravity;
     float[] mGeomagnetic;
@@ -40,7 +39,7 @@ public class CompassFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        galleryViewModel = ViewModelProviders.of(this).get(CompassViewModel.class);
+        //galleryViewModel = ViewModelProviders.of(this).get(CompassViewModel.class);
         View root = inflater.inflate(R.layout.fragment_compass, container, false);
 
         imgHeading = (ImageView) root.findViewById(R.id.img_compass);

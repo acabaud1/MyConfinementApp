@@ -13,54 +13,50 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.ynov.myconfinement.R;
 import com.ynov.myconfinement.ui.DatabaseManager;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class TodoFragment extends Fragment {
 
-    private TodoViewModel galleryViewModel;
     private DatabaseManager databaseManager;
+    private ArrayList<Task> tasks;
+    private TaskAdapter adapter;
+
+    private void updateList() {
+        adapter.updateTasksList((ArrayList<Task>) databaseManager.getTasks());
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        galleryViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
         View root = inflater.inflate(R.layout.fragment_todo, container, false);
-
-        FloatingActionButton fab = root.findViewById(R.id.fab);
-        SwipeMenuListView listView = root.findViewById(R.id.listView);
-
         View layout = inflater.inflate(R.layout.fragment_todo_add, container, false);
         databaseManager = new DatabaseManager(getContext());
+
+        FloatingActionButton fab = root.findViewById(R.id.fabAgenda);
+        SwipeMenuListView listView = root.findViewById(R.id.listViewAgenda);
 
         // Add dialog
         final EditText title = (EditText) layout.findViewById(R.id.title);
         final EditText deadline = (EditText) layout.findViewById(R.id.deadline);
         final Spinner category = (Spinner) layout.findViewById(R.id.category);
+
+        tasks = (ArrayList<Task>) databaseManager.getTasks();
+        adapter = new TaskAdapter(getActivity().getApplicationContext(), R.layout.fragment_todo_item, tasks);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setView(layout);
@@ -77,7 +73,10 @@ public class TodoFragment extends Fragment {
                     Task task = new Task(bTitle, bDeadline, category.getSelectedItem().toString());
                     databaseManager.insertTask(task);
                     Toast.makeText(getContext(), "Tâche ajoutée.", Toast.LENGTH_SHORT).show();
+                    title.setText("");
+                    deadline.setText("");
                     dialog.dismiss();
+                    updateList();
                 }
             }
         });
@@ -104,7 +103,7 @@ public class TodoFragment extends Fragment {
             public void create(SwipeMenu menu) {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity().getApplicationContext());
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
-                deleteItem.setWidth(90);
+                deleteItem.setWidth(150);
                 deleteItem.setIcon(R.drawable.ic_delete_black_24dp);
                 menu.addMenuItem(deleteItem);
             }
@@ -115,9 +114,16 @@ public class TodoFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 // index 0 = delete
+                if(index == 0) {
+                    databaseManager.deleteTask(tasks.get(position));
+                    Toast.makeText(getContext(), "Tâche supprimée.", Toast.LENGTH_SHORT).show();
+                    updateList();
+                }
                 return false;
             }
         });
+
+        listView.setAdapter(adapter);
 
         // Date & Time pickers
         final Calendar c = Calendar.getInstance();
